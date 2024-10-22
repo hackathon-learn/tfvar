@@ -19,13 +19,18 @@ jobs:
           terraform_version: 1.5.0  # Specify the desired Terraform version
 
       - name: Set up Azure Credentials
+        id: set-azure-credentials
         run: |
           echo "${{ secrets.AZURE_CREDENTIALS }}" > $GITHUB_WORKSPACE/azure_credentials.json
 
       - name: Login to Azure
         run: |
           echo "Logging in to Azure..."
-          az login --service-principal -u $(jq -r .clientId $GITHUB_WORKSPACE/azure_credentials.json) -p $(jq -r .clientSecret $GITHUB_WORKSPACE/azure_credentials.json) --tenant $(jq -r .tenantId $GITHUB_WORKSPACE/azure_credentials.json)
+          CLIENT_ID=$(jq -r .clientId $GITHUB_WORKSPACE/azure_credentials.json)
+          CLIENT_SECRET=$(jq -r .clientSecret $GITHUB_WORKSPACE/azure_credentials.json)
+          TENANT_ID=$(jq -r .tenantId $GITHUB_WORKSPACE/azure_credentials.json)
+
+          az login --service-principal -u $CLIENT_ID -p $CLIENT_SECRET --tenant $TENANT_ID
 
       - name: Terraform Init
         run: terraform init
