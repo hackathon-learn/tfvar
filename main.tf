@@ -19,7 +19,7 @@ provider "azurerm" {
 
 variable "rg_name" {
   type    = string
-  default = "nrimaltemprg001"
+  default = "nrimaltemprg007"
 }
 
 variable "rg_location" {
